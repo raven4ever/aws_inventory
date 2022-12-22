@@ -9,7 +9,7 @@ def dir_path(string):
         raise NotADirectoryError(string)
 
 
-@dataclass
+@dataclass(frozen=True)
 class ReportEntry:
     region: str
     service: str

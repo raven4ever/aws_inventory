@@ -4,10 +4,10 @@ from typing import List, Optional
 import boto3
 from botocore.exceptions import ClientError, SSLError
 
-from common import Report, ReportEntry
+from commons import Report, ReportEntry
 
 
-@dataclass
+@dataclass(frozen=True)
 class EC2ReportEntry(ReportEntry):
     availability_zone: Optional[str] = 'N/A'
     instance_type: Optional[str] = 'N/A'
@@ -25,7 +25,7 @@ class EC2ReportEntry(ReportEntry):
 class EC2Report(Report):
     ec2_service_report: List[EC2ReportEntry] = field(default_factory=list)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.ec2 = boto3.resource('ec2', region_name=self.region)
         self.create_service_report()
 

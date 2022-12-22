@@ -1,8 +1,8 @@
-import sys
 import csv
+import sys
 from argparse import ArgumentParser
 
-from common import dir_path
+from commons import dir_path
 from handlers.ec2 import EC2Report
 from regions import Regions
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     print('Get available regions...')
 
-    all_regions = Regions.get_available_regions()
+    all_regions = Regions.get_all_regions()
 
     if len(all_regions) == 0:
         print('You might have a connectivity problem!')
