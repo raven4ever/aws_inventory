@@ -6,8 +6,9 @@ from argparse import ArgumentParser
 from commons import dir_path
 from handlers.ec2 import EC2Report
 from regions import Regions
+from handlers.elb import LBReport
 
-REPORTS_PATH = ''
+REPORTS_PATH = '.'
 
 if __name__ == '__main__':
     # read the reports dir
@@ -30,7 +31,6 @@ if __name__ == '__main__':
 
     if REPORTS_PATH:
         print(f'Saving reports to {REPORTS_PATH}')
-    else:
         for region in all_regions:
             print(f'Getting information about the {region} region')
             ec2_region_report = EC2Report(
@@ -39,3 +39,12 @@ if __name__ == '__main__':
             with open(os.path.join(REPORTS_PATH, 'ec2.csv'), 'a') as ec2_file:
                 writer = csv.writer(ec2_file)
                 writer.writerows(ec2_region_report)
+
+            lb_region_report = LBReport(
+                region=region.short_name).elb_service_report
+
+            with open(os.path.join(REPORTS_PATH, 'elb.csv'), 'a') as elb_file:
+                writer = csv.writer(elb_file)
+                writer.writerows(lb_region_report)
+    else:
+        print('just watching, no saving')
