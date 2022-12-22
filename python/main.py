@@ -1,4 +1,5 @@
 import csv
+import os
 import sys
 from argparse import ArgumentParser
 
@@ -7,6 +8,7 @@ from handlers.ec2 import EC2Report
 from regions import Regions
 
 REPORTS_PATH = ''
+
 if __name__ == '__main__':
     # read the reports dir
     parser = ArgumentParser(
@@ -34,6 +36,6 @@ if __name__ == '__main__':
             ec2_region_report = EC2Report(
                 region=region.short_name).ec2_service_report
 
-            with open('ec2.csv', 'a') as ec2_file:
+            with open(os.path.join(REPORTS_PATH, 'ec2.csv'), 'a') as ec2_file:
                 writer = csv.writer(ec2_file)
                 writer.writerows(ec2_region_report)
