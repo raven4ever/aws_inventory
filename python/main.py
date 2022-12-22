@@ -1,12 +1,12 @@
-import csv
 import os
 import sys
 from argparse import ArgumentParser
 
 from commons import dir_path
-from handlers.ec2 import EC2Report
+from handlers.ec2 import EC2Report, EC2ReportEntry
 from regions import Regions
-from handlers.elb import LBReport
+from handlers.elb import LBReport, LBReportEntry
+from dataclass_csv import DataclassWriter
 
 REPORTS_PATH = '.'
 
@@ -36,15 +36,19 @@ if __name__ == '__main__':
             ec2_region_report = EC2Report(
                 region=region.short_name).ec2_service_report
 
-            with open(os.path.join(REPORTS_PATH, 'ec2.csv'), 'a') as ec2_file:
-                writer = csv.writer(ec2_file)
-                writer.writerows(ec2_region_report)
+            if len(ec2_region_report) > 0:
+                with open(os.path.join(REPORTS_PATH, 'ec2.csv'), 'a') as ec2_file:
+                    w = DataclassWriter(
+                        ec2_file, ec2_region_report, EC2ReportEntry)
+                    w.write()
 
             lb_region_report = LBReport(
                 region=region.short_name).elb_service_report
 
-            with open(os.path.join(REPORTS_PATH, 'elb.csv'), 'a') as elb_file:
-                writer = csv.writer(elb_file)
-                writer.writerows(lb_region_report)
+            if len(lb_region_report) > 0:
+                with open(os.path.join(REPORTS_PATH, 'elb.csv'), 'a') as elb_file:
+                    w = DataclassWriter(
+                        elb_file, lb_region_report, LBReportEntry)
+                    w.write()
     else:
         print('just watching, no saving')

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List
 
 import boto3
 from botocore.exceptions import ClientError, SSLError
@@ -9,14 +9,12 @@ from commons import Report, ReportEntry
 
 @dataclass(frozen=True)
 class LBReportEntry(ReportEntry):
-    type: Optional[str] = 'N/A'
 
     def __iter__(self):
         yield self.region
         yield self.service
         yield self.sub_service
         yield self.resource_id
-        yield self.type
 
 
 @dataclass
