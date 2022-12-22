@@ -1,12 +1,11 @@
-import os
 import sys
 from argparse import ArgumentParser
 
 from commons import dir_path
-from handlers.ec2 import EC2Report, EC2ReportEntry
+from files import init_save_files, write_data_to_file
+from handlers.ec2 import EC2Report
+from handlers.elb import LBReport
 from regions import Regions
-from handlers.elb import LBReport, LBReportEntry
-from dataclass_csv import DataclassWriter
 
 REPORTS_PATH = '.'
 
@@ -30,25 +29,20 @@ if __name__ == '__main__':
         sys.exit(1)
 
     if REPORTS_PATH:
-        print(f'Saving reports to {REPORTS_PATH}')
+        init_save_files(REPORTS_PATH)
+
         for region in all_regions:
             print(f'Getting information about the {region} region')
             ec2_region_report = EC2Report(
                 region=region.short_name).ec2_service_report
 
             if len(ec2_region_report) > 0:
-                with open(os.path.join(REPORTS_PATH, 'ec2.csv'), 'a') as ec2_file:
-                    w = DataclassWriter(
-                        ec2_file, ec2_region_report, EC2ReportEntry)
-                    w.write()
+                write_data_to_file(REPORTS_PATH, 'ec2', ec2_region_report)
 
             lb_region_report = LBReport(
                 region=region.short_name).elb_service_report
 
             if len(lb_region_report) > 0:
-                with open(os.path.join(REPORTS_PATH, 'elb.csv'), 'a') as elb_file:
-                    w = DataclassWriter(
-                        elb_file, lb_region_report, LBReportEntry)
-                    w.write()
+                write_data_to_file(REPORTS_PATH, 'elb', lb_region_report)
     else:
         print('just watching, no saving')
