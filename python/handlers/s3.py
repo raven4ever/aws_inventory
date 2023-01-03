@@ -34,14 +34,14 @@ class S3Report(Report):
             print(f'S3 service SSL error for region {self.region}...')
 
     def get_s3_buckets(self) -> List[S3ReportEntry]:
-        S3_entries: List[S3ReportEntry] = list()
+        s3_entries: List[S3ReportEntry] = list()
         all_instances = self.s3.buckets.all()
 
         for bucket in all_instances:
-            S3_entries.append(S3ReportEntry(
+            s3_entries.append(S3ReportEntry(
                 region=self.region,
                 service='S3',
                 sub_service='S3',
                 resource_id=bucket.name))
 
-        return S3_entries
+        return s3_entries
