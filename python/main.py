@@ -1,3 +1,4 @@
+import logging
 import sys
 from argparse import ArgumentParser
 
@@ -22,20 +23,21 @@ if __name__ == '__main__':
 
     REPORTS_PATH = getattr(args, 'report')
 
-    print('Get available regions...')
+    logging.info('Get available regions...')
 
     app_config = Configuration()
     all_regions = app_config.regions
 
     if len(all_regions) == 0:
-        print('You might have a connectivity problem!')
+        logging.error('You might have a connectivity problem!')
         sys.exit(1)
 
     if REPORTS_PATH:
         init_save_files(REPORTS_PATH)
 
         for region in all_regions:
-            print(f'Getting information about the {region} region')
+            logging.info(f'Getting information about the {region} region')
+
             ec2_region_report = EC2Report(
                 region=region.short_name).ec2_service_report
 

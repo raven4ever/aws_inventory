@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 from typing import List
 
@@ -28,10 +29,12 @@ class LBReport(Report):
     def create_service_report(self) -> None:
         try:
             self.elb_service_report.extend(self.get_lbs())
-        except ClientError:
-            print(f'Skipping LB service for region {self.region}...')
-        except SSLError:
-            print(f'LB service SSL error for region {self.region}...')
+        except ClientError as ce:
+            logging.error(f'Skipping LB service for region {self.region}...')
+            logging.debug(ce)
+        except SSLError as ssle:
+            logging.error(f'LB service SSL error for region {self.region}...')
+            logging.debug(ssle)
 
     def get_lbs(self) -> List[LBReportEntry]:
         lbs: List[LBReportEntry] = list()

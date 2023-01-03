@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 from typing import List
 
@@ -28,10 +29,12 @@ class S3Report(Report):
     def create_service_report(self) -> None:
         try:
             self.s3_service_report.extend(self.get_s3_buckets())
-        except ClientError:
-            print(f'Skipping S3 service for region {self.region}...')
-        except SSLError:
-            print(f'S3 service SSL error for region {self.region}...')
+        except ClientError as ce:
+            logging.error(f'Skipping S3 service for region {self.region}...')
+            logging.debug(ce)
+        except SSLError as ssle:
+            logging.error(f'S3 service SSL error for region {self.region}...')
+            logging.debug(ssle)
 
     def get_s3_buckets(self) -> List[S3ReportEntry]:
         s3_entries: List[S3ReportEntry] = list()

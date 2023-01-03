@@ -1,4 +1,5 @@
 
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Set
@@ -27,10 +28,10 @@ class Configuration:
             if len(config_regions) > 0:
                 self.regions = config_regions
             else:
-                print('Using all regions')
+                logging.info('Using all regions')
                 self.regions = self.get_all_regions()
         else:
-            print('Using all regions')
+            logging.info('Using all regions')
             self.regions = self.get_all_regions()
 
     def read_config_file(self, config_file_path: Path) -> dict:

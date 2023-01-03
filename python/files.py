@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import List
 
@@ -18,7 +19,7 @@ SERVICE_TO_REPORT_MAP = {
 
 
 def init_save_files(path: str) -> None:
-    print(f'Initializing reports to {path}')
+    logging.info(f'Initializing reports to {path}')
 
     for service in SERVICE_TO_REPORT_MAP:
         with open(os.path.join(path, f'{service}.csv'), 'a') as file:
