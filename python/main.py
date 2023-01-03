@@ -7,6 +7,7 @@ from files import init_save_files, write_data_to_file
 from handlers.dbs import DBReport
 from handlers.ec2 import EC2Report
 from handlers.elb import LBReport
+from handlers.s3 import S3Report
 
 REPORTS_PATH = '.'
 
@@ -52,5 +53,11 @@ if __name__ == '__main__':
 
             if len(db_region_report) > 0:
                 write_data_to_file(REPORTS_PATH, 'dbs', db_region_report)
+
+            s3_region_report = S3Report(
+                region=region.short_name).s3_service_report
+
+            if len(s3_region_report) > 0:
+                write_data_to_file(REPORTS_PATH, 's3', s3_region_report)
     else:
         print('just watching, no saving')

@@ -4,14 +4,16 @@ from typing import List
 from dataclass_csv import DataclassWriter
 
 from commons import ReportEntry
+from handlers.dbs import DBReportEntry
 from handlers.ec2 import EC2ReportEntry
 from handlers.elb import LBReportEntry
-from handlers.dbs import DBReportEntry
+from handlers.s3 import S3ReportEntry
 
 SERVICE_TO_REPORT_MAP = {
     'ec2': EC2ReportEntry,
     'elb': LBReportEntry,
-    'dbs': DBReportEntry
+    'dbs': DBReportEntry,
+    's3': S3ReportEntry
 }
 
 
