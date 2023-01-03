@@ -2,11 +2,11 @@ import sys
 from argparse import ArgumentParser
 
 from commons import dir_path
+from config import Configuration
 from files import init_save_files, write_data_to_file
+from handlers.dbs import DBReport
 from handlers.ec2 import EC2Report
 from handlers.elb import LBReport
-from handlers.dbs import DBReport
-from regions import Regions
 
 REPORTS_PATH = '.'
 
@@ -23,7 +23,8 @@ if __name__ == '__main__':
 
     print('Get available regions...')
 
-    all_regions = Regions.get_all_regions()
+    app_config = Configuration()
+    all_regions = app_config.regions
 
     if len(all_regions) == 0:
         print('You might have a connectivity problem!')
