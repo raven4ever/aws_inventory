@@ -38,7 +38,6 @@ class DBReport(Report):
         try:
             self.db_service_report.extend(self.get_rds_instances())
             self.db_service_report.extend(self.get_dynamodb_tables())
-            self.db_service_report.extend(self.get_documentdb_instances())
         except ClientError:
             print(f'Skipping RDS service for region {self.region}...')
         except SSLError:
@@ -49,15 +48,21 @@ class DBReport(Report):
         response = self.rds.describe_db_instances()
 
         for instance in response['DBInstances']:
+            db_engine = instance['Engine']
+
+            if db_engine == 'docdb':
+                sub_service = 'DocumentDB'
+            else:
+                sub_service = 'RDS'
+
             dbs.append(DBReportEntry(
                 region=self.region,
                 service='DB',
-                sub_service='RDS',
+                sub_service=sub_service,
                 resource_id=instance['DBInstanceIdentifier'],
                 availability_zone=instance['AvailabilityZone'],
                 instance_type=instance['DBInstanceClass'],
-                engine=instance['Engine']
-            ))
+                engine=db_engine))
 
         return dbs
 
@@ -72,23 +77,6 @@ class DBReport(Report):
                 sub_service='DynamoDB',
                 resource_id=table.name,
                 engine='DynamoDB'
-            ))
-
-        return dbs
-
-    def get_documentdb_instances(self) -> List[DBReportEntry]:
-        dbs: List[DBReportEntry] = list()
-        response = self.rds.describe_db_instances()
-
-        for instance in response['DBInstances']:
-            dbs.append(DBReportEntry(
-                region=self.region,
-                service='DB',
-                sub_service='DocumentDB',
-                resource_id=instance['DBInstanceIdentifier'],
-                availability_zone=instance['AvailabilityZone'],
-                instance_type=instance['DBInstanceClass'],
-                engine=instance['Engine']
             ))
 
         return dbs
