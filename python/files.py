@@ -6,10 +6,12 @@ from dataclass_csv import DataclassWriter
 from commons import ReportEntry
 from handlers.ec2 import EC2ReportEntry
 from handlers.elb import LBReportEntry
+from handlers.dbs import DBReportEntry
 
 SERVICE_TO_REPORT_MAP = {
     'ec2': EC2ReportEntry,
-    'elb': LBReportEntry
+    'elb': LBReportEntry,
+    'dbs': DBReportEntry
 }
 
 

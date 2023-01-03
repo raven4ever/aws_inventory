@@ -5,6 +5,7 @@ from commons import dir_path
 from files import init_save_files, write_data_to_file
 from handlers.ec2 import EC2Report
 from handlers.elb import LBReport
+from handlers.dbs import DBReport
 from regions import Regions
 
 REPORTS_PATH = '.'
@@ -44,5 +45,11 @@ if __name__ == '__main__':
 
             if len(lb_region_report) > 0:
                 write_data_to_file(REPORTS_PATH, 'elb', lb_region_report)
+
+            db_region_report = DBReport(
+                region=region.short_name).db_service_report
+
+            if len(db_region_report) > 0:
+                write_data_to_file(REPORTS_PATH, 'dbs', db_region_report)
     else:
         print('just watching, no saving')
