@@ -41,7 +41,7 @@ class Configuration:
     def read_config_file_regions(self) -> Set[Region]:
         output: Set[Region] = set()
 
-        if 'regions' in self.configuration:
+        if self.configuration and 'regions' in self.configuration:
             for short_name in self.configuration['regions']:
                 output.add(Region(short_name=short_name,
                                   long_name=self.get_region_long_name(short_name)))
