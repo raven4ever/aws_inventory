@@ -30,11 +30,11 @@ class LBReport(Report):
         try:
             self.elb_service_report.extend(self.get_lbs())
         except ClientError as ce:
+            logging.error(ce)
             logging.error(f'Skipping LB service for region {self.region}...')
-            logging.debug(ce)
         except SSLError as ssle:
+            logging.error(ssle)
             logging.error(f'LB service SSL error for region {self.region}...')
-            logging.debug(ssle)
 
     def get_lbs(self) -> List[LBReportEntry]:
         lbs: List[LBReportEntry] = list()

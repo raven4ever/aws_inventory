@@ -37,11 +37,11 @@ class EC2Report(Report):
             self.ec2_service_report.extend(self.get_amis())
             self.ec2_service_report.extend(self.get_ec2_snapshots())
         except ClientError as ce:
+            logging.error(ce)
             logging.error(f'Skipping EC2 service for region {self.region}...')
-            logging.debug(ce)
         except SSLError as ssle:
+            logging.error(ssle)
             logging.error(f'EC2 service SSL error for region {self.region}...')
-            logging.debug(ssle)
 
     def get_amis(self) -> List[EC2ReportEntry]:
         ami_entries: List[EC2ReportEntry] = list()

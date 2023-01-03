@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--report', required=False, type=dir_path, help='Path to the folder where to store the services reports.')
     parser.add_argument(
-        '--log', required=False, type=logs_type, help='Logs level', default='INFO')
+        '--log', required=False, type=logs_type, help='Logs level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'])
 
     args = parser.parse_args()
 

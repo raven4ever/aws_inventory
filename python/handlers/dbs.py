@@ -43,11 +43,11 @@ class DBReport(Report):
             self.db_service_report.extend(self.get_elasticache_instances())
             self.db_service_report.extend(self.get_memorydb_instances())
         except ClientError as ce:
+            logging.error(ce)
             logging.error(f'Skipping RDS service for region {self.region}...')
-            logging.debug(ce)
         except SSLError as ssle:
+            logging.error(ssle)
             logging.error(f'RDS service SSL error for region {self.region}...')
-            logging.debug(ssle)
 
     def get_rds_instances(self) -> List[DBReportEntry]:
         dbs: List[DBReportEntry] = list()
