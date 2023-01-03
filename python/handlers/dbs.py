@@ -30,7 +30,7 @@ class DBReport(Report):
     def __post_init__(self) -> None:
         self.rds = boto3.client('rds', region_name=self.region)
         self.dynamodb = boto3.resource('dynamodb', region_name=self.region)
-        self.docdb = boto3.client('docdb', region_name=self.region)
+        self.elasticache = boto3.client('elasticache', region_name=self.region)
 
         self.create_service_report()
 
@@ -38,6 +38,7 @@ class DBReport(Report):
         try:
             self.db_service_report.extend(self.get_rds_instances())
             self.db_service_report.extend(self.get_dynamodb_tables())
+            self.db_service_report.extend(self.get_elasticache_instances())
         except ClientError:
             print(f'Skipping RDS service for region {self.region}...')
         except SSLError:
@@ -76,7 +77,22 @@ class DBReport(Report):
                 service='DB',
                 sub_service='DynamoDB',
                 resource_id=table.name,
-                engine='DynamoDB'
-            ))
+                engine='DynamoDB'))
+
+        return dbs
+
+    def get_elasticache_instances(self) -> List[DBReportEntry]:
+        dbs: List[DBReportEntry] = list()
+        response = self.elasticache.describe_cache_clusters()
+
+        for instance in response['CacheClusters']:
+            dbs.append(DBReportEntry(
+                region=self.region,
+                service='DB',
+                sub_service='ElastiCache',
+                resource_id=instance['CacheClusterId'],
+                availability_zone=instance['PreferredAvailabilityZone '],
+                instance_type=instance['CacheNodeType'],
+                engine=instance['Engine']))
 
         return dbs
