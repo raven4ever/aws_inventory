@@ -68,7 +68,8 @@ class DBReport(Report):
                 region=self.region,
                 service='DB',
                 sub_service='DynamoDB',
-                resource_id=table.name
+                resource_id=table.name,
+                engine='DynamoDB'
             ))
 
         return dbs
