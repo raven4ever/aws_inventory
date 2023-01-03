@@ -34,7 +34,7 @@ class Configuration:
             self.regions = self.get_all_regions()
 
     def read_config_file(self, config_file_path: Path) -> dict:
-        with open(config_file_path.absolute) as file:
+        with open(config_file_path.absolute()) as file:
             config_file = yaml.full_load(file)
         return config_file
 
