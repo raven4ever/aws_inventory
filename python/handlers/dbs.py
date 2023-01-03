@@ -31,6 +31,7 @@ class DBReport(Report):
         self.rds = boto3.client('rds', region_name=self.region)
         self.dynamodb = boto3.resource('dynamodb', region_name=self.region)
         self.elasticache = boto3.client('elasticache', region_name=self.region)
+        self.memorydb = boto3.client('memorydb', region_name=self.region)
 
         self.create_service_report()
 
@@ -39,6 +40,7 @@ class DBReport(Report):
             self.db_service_report.extend(self.get_rds_instances())
             self.db_service_report.extend(self.get_dynamodb_tables())
             self.db_service_report.extend(self.get_elasticache_instances())
+            self.db_service_report.extend(self.get_memorydb_instances())
         except ClientError:
             print(f'Skipping RDS service for region {self.region}...')
         except SSLError:
@@ -91,8 +93,24 @@ class DBReport(Report):
                 service='DB',
                 sub_service='ElastiCache',
                 resource_id=instance['CacheClusterId'],
-                availability_zone=instance['PreferredAvailabilityZone '],
+                availability_zone=instance['PreferredAvailabilityZone'],
                 instance_type=instance['CacheNodeType'],
                 engine=instance['Engine']))
+
+        return dbs
+
+    def get_memorydb_instances(self) -> List[DBReportEntry]:
+        dbs: List[DBReportEntry] = list()
+        response = self.memorydb.describe_clusters()
+
+        for instance in response['Clusters']:
+            dbs.append(DBReportEntry(
+                region=self.region,
+                service='DB',
+                sub_service='MemoryDB',
+                resource_id=instance['Name'],
+                availability_zone=instance['AvailabilityZone'],
+                instance_type=instance['NodeType'],
+                engine='Redis'))
 
         return dbs
