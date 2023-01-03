@@ -30,6 +30,7 @@ class DBReport(Report):
     def __post_init__(self) -> None:
         self.rds = boto3.client('rds', region_name=self.region)
         self.dynamodb = boto3.resource('dynamodb', region_name=self.region)
+        self.docdb = boto3.client('docdb', region_name=self.region)
 
         self.create_service_report()
 
@@ -37,6 +38,7 @@ class DBReport(Report):
         try:
             self.db_service_report.extend(self.get_rds_instances())
             self.db_service_report.extend(self.get_dynamodb_tables())
+            self.db_service_report.extend(self.get_documentdb_instances())
         except ClientError:
             print(f'Skipping RDS service for region {self.region}...')
         except SSLError:
@@ -70,6 +72,23 @@ class DBReport(Report):
                 sub_service='DynamoDB',
                 resource_id=table.name,
                 engine='DynamoDB'
+            ))
+
+        return dbs
+
+    def get_documentdb_instances(self) -> List[DBReportEntry]:
+        dbs: List[DBReportEntry] = list()
+        response = self.rds.describe_db_instances()
+
+        for instance in response['DBInstances']:
+            dbs.append(DBReportEntry(
+                region=self.region,
+                service='DB',
+                sub_service='DocumentDB',
+                resource_id=instance['DBInstanceIdentifier'],
+                availability_zone=instance['AvailabilityZone'],
+                instance_type=instance['DBInstanceClass'],
+                engine=instance['Engine']
             ))
 
         return dbs
