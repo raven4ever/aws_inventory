@@ -112,7 +112,6 @@ class DBReport(Report):
                 service='DB',
                 sub_service='MemoryDB',
                 resource_id=instance['Name'],
-                availability_zone=instance['AvailabilityZone'],
                 instance_type=instance['NodeType'],
                 engine='Redis'))
 
